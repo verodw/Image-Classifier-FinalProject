@@ -11,8 +11,10 @@ def load_checkpoint(filepath):
     checkpoint = torch.load(filepath)
     if checkpoint['arch'] == 'vgg16':
         model = models.vgg16(pretrained=True)
+        in_features = model.classifier[0].in_features
     elif checkpoint['arch'] == 'alexnet':
         model = models.alexnet(pretrained=True)
+        in_features = model.classifier[1].in_features
     else:
         raise ValueError('Invalid architecture.')
 
@@ -20,7 +22,7 @@ def load_checkpoint(filepath):
         param.requires_grad = False
 
     classifier = nn.Sequential(OrderedDict([
-        ('fc1', nn.Linear(25088, checkpoint['hidden_units'])),
+        ('fc1', nn.Linear(in_features, checkpoint['hidden_units'])),
         ('relu', nn.ReLU()),
         ('fc2', nn.Linear(checkpoint['hidden_units'], 102)),
         ('output', nn.LogSoftmax(dim=1))
