@@ -32,8 +32,10 @@ def get_data_loaders(data_dir, batch_size=64):
 def build_model(arch='vgg16', hidden_units=512, gpu=True):
     if arch == 'vgg16':
         model = models.vgg16(pretrained=True)
+        in_features = model.classifier[0].in_features
     elif arch == 'alexnet':
         model = models.alexnet(pretrained=True)
+        in_features = model.classifier[1].in_features
     else:
         raise ValueError('Invalid architecture choice. Choose either vgg16 or alexnet.')
 
@@ -41,7 +43,7 @@ def build_model(arch='vgg16', hidden_units=512, gpu=True):
         param.requires_grad = False
 
     classifier = nn.Sequential(OrderedDict([
-        ('fc1', nn.Linear(25088, hidden_units)),
+        ('fc1', nn.Linear(in_features, hidden_units)),
         ('relu', nn.ReLU()),
         ('fc2', nn.Linear(hidden_units, 102)),
         ('output', nn.LogSoftmax(dim=1))
