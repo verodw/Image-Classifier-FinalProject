@@ -100,7 +100,8 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, epochs=5
         'state_dict': model.state_dict(),
         'class_to_idx': train_loader.dataset.class_to_idx,
         'optimizer_state_dict': optimizer.state_dict(),
-        'epoch': epochs
+        'epoch': epochs,
+        'hidden_units': args.hidden_units
     }, save_path)
     print(f"Checkpoint saved to {save_path}")
 
